@@ -76,9 +76,7 @@ namespace Engine {
             break;
           }
         }
-        if(distance >= 0) {
-          result.translate(mPosition.x(), mPosition.y());
-        }
+        result.translate(mPosition.x(), mPosition.y());
         return result;
       }
   };

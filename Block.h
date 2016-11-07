@@ -6,12 +6,20 @@
 #include "engine/Vector.h"
 #include "Ball.h"
 
+class Block;
+class BlockKnockCallback {
+  friend class Block;
+  protected:
+    virtual void onKnock(int xIndex, int yIndex, int xCount, int yCount) = 0;
+};
+
 class Block: public Engine::MatrixRectCoverCallback {
   private:
     Engine::Matrix mMatrix;
     int mXcount, mYcount;
     bool* mBlockAvaliableList;
     Ball* mBall;
+    BlockKnockCallback* mCallback;
     Engine::Vector mCollisionVector;
   public:
     Block(number width, number height, int xCount, int yCount):
@@ -26,8 +34,9 @@ class Block: public Engine::MatrixRectCoverCallback {
     virtual ~Block() {
       delete[] mBlockAvaliableList;
     }
-    void run(Ball& ball) {
+    void run(Ball& ball, BlockKnockCallback* callback = NULL) {
       mBall = &ball;
+      mCallback = callback;
       mCollisionVector.set(0,0); //清空碰撞速度向量和
       mMatrix.calcRectCover(ball.rect(), *this); //开始遍历块
       if(!mCollisionVector.isZero()) {
@@ -35,6 +44,7 @@ class Block: public Engine::MatrixRectCoverCallback {
         mCollisionVector.set(0,0);
       }
       mBall = NULL;
+      mCallback = NULL;
     }
   protected:
     void cover(int xIndex, int yIndex, const Engine::Rect& rect) {
@@ -55,7 +65,10 @@ class Block: public Engine::MatrixRectCoverCallback {
       Engine::Vector vector = mBall->collision(rect);
       if( !vector.isZero() ) {
         avaliable = false;
-        mCollisionVector += vector;
+        /*mCollisionVector += vector;*/
+        if(NULL!= mCallback) {
+          mCallback->onKnock(xIndex, yIndex, mXcount, mYcount);
+        }
       }
     }
 };

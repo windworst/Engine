@@ -29,18 +29,18 @@ class Container {
       //×²¶¥
       if(yt < 0) {
         adjust.y(-yt);
-        atom.v().reflectionThis(yAxis);
+        atom.reflection(yAxis);
       } else if(yb < 0) { //×²µ×
         adjust.y(yb);
-        atom.v().reflectionThis(yAxis);
+        atom.reflection(yAxis);
       }
       //×²×ó
       if(xl < 0) {
         adjust.x(-xl);
-        atom.v().reflectionThis(xAxis);
+        atom.reflection(xAxis);
       } else if(xr < 0) { //×²ÓÒ
         adjust.x(xr);
-        atom.v().reflectionThis(xAxis);
+        atom.reflection(xAxis);
       }
       adjust.move(atom.position());
       return true;

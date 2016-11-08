@@ -58,7 +58,7 @@ namespace Engine {
         }
         return *this;
       }
-      bool isZero() {
+      bool isZero() const {
         return mX == 0 && mY == 0;
       }
       //向量加法

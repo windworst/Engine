@@ -2,6 +2,7 @@
 #ifndef ENGINE_RECT
 #define ENGINE_RECT
 #include "Line.h"
+#include "Vector.h"
 
 namespace Engine {
   class Rect {
@@ -46,38 +47,26 @@ namespace Engine {
       }
       bool collision(const Rect& rect) const {
         return !(top() > rect.bottom() || rect.top() > bottom()
-        ||  left() > rect.right() || rect.left() > right());
+            ||  left() > rect.right() || rect.left() > right());
       }
-      Point nearPoint(const Point& point) const {
-        Point tPoint(point);
-        tPoint.translate(-mPosition.y(), -mPosition.y());
-        //判断点是否在矩形内部
-        if(
-            0 <= tPoint.x() && tPoint.x() <= mWidth
-            &&
-            0 <= tPoint.y() && tPoint.y() <= mHeight
-          ) {
-          return point;
+      Vector toNearPoint(const Point& point) const {
+        Vector vector;
+        number dx1 = point.x() - left(), dx2 = right() - point.x(),
+               dy1 = point.y() - top(), dy2 = bottom() - point.y(),
+               dx = 0, dy = 0;
+        //点在矩形内部
+        if(dx1 > 0 && dx2 > 0 && dy1 > 0 && dy2 > 0) {
+          dx = dx1 < dx2 ? dx1 : dx2;
+          dy = dy1 < dy2 ? dy1:  dy2;
+          dx < dy ? dy = 0 : dx = 0;
+        } else {
+          dx1 < 0 ? dx = dx1 : 0;
+          dx2 < 0 ? dx = dx2 : 0;
+          dy1 < 0 ? dy = dy1 : 0;
+          dy2 < 0 ? dy = dy2 : 0;
         }
-        Point pList[] = {Point(0, 0), Point(mWidth, 0), Point(0,mHeight), Point(mWidth,mHeight) }; //四个点
-        int l[4][2] = {{0, 1}, {1, 3}, {2, 3}, {0, 2}};//四条边
-        number distance = -1;
-        Point result, head, tail;
-        int i;
-        for(i = 0; i < 4; ++i) {
-          Point p = Line::nearPoint(pList[l[i][0]], pList[l[i][1]], point);
-          number dx = p.x() - point.x(), dy = p.y() - point.y();
-          number d = dx * dx + dy * dy;
-          if(distance < 0 || d < distance) {
-            distance = d;
-            result = p;
-          }
-          if( IS_ZERO(distance) ) {
-            break;
-          }
-        }
-        result.translate(mPosition.x(), mPosition.y());
-        return result;
+        vector.set(-dx, -dy);
+        return vector;
       }
   };
 };

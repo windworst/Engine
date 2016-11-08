@@ -56,6 +56,9 @@ namespace Engine {
         //位移: 速度乘上时间
         mPosition.translate(mV.x() * dt, mV.y() * dt);
       }
+      //处理反射
+      virtual void reflection(const Vector& vector) {
+      }
       //物体所占矩形的大小
       virtual const Rect& rect() = 0;
   };

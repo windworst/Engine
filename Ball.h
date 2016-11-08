@@ -22,7 +22,6 @@ class Ball: public Engine::Atom {
     number r() const {
       return mR;
     }
-
     const Engine::Rect& rect() {
       number R = mR+mR;
       mRect.width(R);
@@ -33,16 +32,17 @@ class Ball: public Engine::Atom {
     }
 
     Engine::Vector collision(const Engine::Rect& rect) {
-      Engine::Vector vector;
-      Engine::Point nearPoint = rect.nearPoint(position());
-      number dx = nearPoint.x() - position().x(),
-             dy = nearPoint.y() - position().y();
-      //已经碰撞了!
-      if(mR * mR >= dx*dx + dy*dy) {
-        //从碰撞点指向圆心的向量
-        vector.set(dx, dy);
+      if(!mRect.collision(rect)) return Engine::Vector();
+      Engine::Vector vector = rect.toNearPoint(position());
+      if(vector.x() * vector.x() + vector.y() * vector.y() > r()*r()) {
+        vector.set(0,0);
       }
       return vector;
+    }
+
+    void reflection(const Engine::Vector& vector) {
+      if(vector.isZero()) return;
+      v().reflectionThis(vector);
     }
 };
 #endif

@@ -65,7 +65,7 @@ class Block: public Engine::MatrixRectCoverCallback {
       Engine::Vector vector = mBall->collision(rect);
       if( !vector.isZero() ) {
         avaliable = false;
-        /*mCollisionVector += vector;*/
+        mCollisionVector += vector;
         if(NULL!= mCallback) {
           mCallback->onKnock(xIndex, yIndex, mXcount, mYcount);
         }
